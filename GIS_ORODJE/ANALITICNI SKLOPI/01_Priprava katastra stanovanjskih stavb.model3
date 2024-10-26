@@ -1,0 +1,195 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option name="children" type="Map">
+    <Option name="native:postgisexecutesql_1" type="Map">
+      <Option name="active" value="true" type="bool"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" value="native:postgisexecutesql" type="QString"/>
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="Priprava katastra stanovanjskih stavb" type="QString"/>
+        <Option name="component_height" value="30" type="double"/>
+        <Option name="component_pos_x" value="1029" type="double"/>
+        <Option name="component_pos_y" value="381" type="double"/>
+        <Option name="component_width" value="216" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="PostgreSQL execute SQL" type="QString"/>
+      <Option name="component_height" value="69" type="double"/>
+      <Option name="component_pos_x" value="784" type="double"/>
+      <Option name="component_pos_y" value="380.5" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="dependencies"/>
+      <Option name="id" value="native:postgisexecutesql_1" type="QString"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="true" type="bool"/>
+      <Option name="params" type="Map">
+        <Option name="DATABASE" type="List">
+          <Option type="Map">
+            <Option name="source" value="2" type="int"/>
+            <Option name="static_value" value="test" type="QString"/>
+          </Option>
+        </Option>
+        <Option name="SQL" type="List">
+          <Option type="Map">
+            <Option name="expression" value="&#x9;-- zps - seštej geometrije - ker je ena stavba lahko na več parcelah&#xd;&#xa;&#x9;'drop table if exists &#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG;&#xd;&#xa;&#x9;CREATE TABLE &#x9;&#x9;&#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG AS&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;with cte_union AS (&#xd;&#xa;&#x9;select &#xd;&#xa;&#x9;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;&#x9;POVRSINA,&#xd;&#xa;&#x9;&#x9;GEOM&#xd;&#xa;&#x9;FROM BASEMAP.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON&#xd;&#xa;&#x9;UNION ALL &#xd;&#xa;&#x9;select &#xd;&#xa;&#x9;&#x9;eid_stavb0::bigint AS EID_STAVBA,&#xd;&#xa;&#x9;&#x9;povrsina,&#xd;&#xa;&#x9;&#x9;ST_Multi(ST_Buffer(geom, 1)) AS geom&#xd;&#xa;&#x9;from&#x9;&#xd;&#xa;&#x9;scratch.kn_slo_parcele_slo_stavbe_parcele_tocka&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;)&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;&#x9;SUM(POVRSINA) AS POVRSINA_ZPS,&#xd;&#xa;&#x9;&#x9;ST_UNION (GEOM) AS GEOM&#xd;&#xa;&#x9;FROM&#xd;&#xa;&#x9;&#x9;cte_union&#xd;&#xa;&#x9;GROUP BY&#xd;&#xa;&#x9;&#x9;EID_STAVBA;&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;CREATE INDEX ON&#x9;&#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG USING GIST (GEOM);&#xd;&#xa;&#x9;ALTER TABLE &#x9;&#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG ADD COLUMN GID SERIAL PRIMARY KEY;&#xd;&#xa;--------------------------------------------------------------------------------------------------------------------&#xd;&#xa;--K1_A2&#xd;&#xa;&#x9;-- SAMO IZ SLOJA KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON&#xd;&#xa;&#x9;DROP TABLE IF EXISTS &#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG;&#xd;&#xa;&#x9;CREATE TABLE &#x9;&#x9;&#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG AS&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;&#x9;SUM(POVRSINA) AS POVRSINA_ZPS,&#xd;&#xa;&#x9;&#x9;ST_UNION (GEOM) AS GEOM&#xd;&#xa;&#x9;FROM&#xd;&#xa;&#x9;&#x9;BASEMAP.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON&#xd;&#xa;&#x9;GROUP BY&#xd;&#xa;&#x9;&#x9;EID_STAVBA;&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;CREATE INDEX ON &#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG USING GIST (GEOM);&#xd;&#xa;&#x9;ALTER TABLE &#x9;&#x9;SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG ADD COLUMN GID SERIAL PRIMARY KEY;&#xd;&#xa;---------------------------------------------------------------------------------------------------------------------------------&#xd;&#xa;--K1_A3&#xd;&#xa;-- združi etaže v en sloj in za stavbo poglej najnižjo vrednost&#xd;&#xa;drop table if exists scratch.kn_slo_stavbe_slo_etaze_merge;&#xd;&#xa;create table scratch.kn_slo_stavbe_slo_etaze_merge as&#xd;&#xa;&#xd;&#xa;with cte_zdruzi as (&#xd;&#xa;SELECT&#xd;&#xa;&#x9;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;&#x9;stevilka_e&#xd;&#xa;FROM&#xd;&#xa;&#x9;&#x9;scratch.kn_slo_stavbe_slo_etaze_null&#xd;&#xa;&#x9;WHERE PRITLICNA_ = 1&#xd;&#xa;&#x9;&#x9;UNION ALL&#xd;&#xa;SELECT&#xd;&#xa;&#x9;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;&#x9;stevilka_e&#xd;&#xa;FROM&#xd;&#xa;&#x9;&#x9;scratch.kn_slo_stavbe_slo_etaze_POLIGON&#xd;&#xa;WHERE PRITLICNA_ = 1&#xd;&#xa;)&#xd;&#xa;select EID_STAVBA::bigint,&#xd;&#xa;&#x9;min(stevilka_e) as STEVILKA_PRITLICNE_ETAZE&#xd;&#xa;&#xd;&#xa;from cte_zdruzi&#xd;&#xa;group by EID_STAVBA;&#xd;&#xa;&#xd;&#xa;------------------------------------------------------------------------------------------------------------------&#xd;&#xa;-- naredi združen sloj stavb, kjer tudi določiš katero geometrijo boš uporabil&#xd;&#xa;-----------------------------------------------------------------------------------------------------------------------------------&#xd;&#xa;--K1_B&#xd;&#xa;&#xd;&#xa;--K1_B1&#xd;&#xa;-- NAREDI SLOJ Z VESMI GEOMETRIJAMI&#xd;&#xa;-- UPORABNO V NASLEDNJEM KORAKU, TER ZA ISKANJE NADOMESNTIH GEOMETRIJ&#xd;&#xa;DROP TABLE IF EXISTS &#x9;rezultati.GEOM;&#xd;&#xa;CREATE TABLE &#x9;&#x9;&#x9;rezultati.GEOM AS&#xd;&#xa;&#xd;&#xa;SELECT&#xd;&#xa;&#x9;A.EID_STAVBA::text,&#xd;&#xa;&#x9;KO_ID,&#xd;&#xa;&#x9;A.ST_STAVBE,&#xd;&#xa;&#x9;A.STEVILO_ETAZ,&#xd;&#xa;&#x9;A.STEVILO_STANOVANJ,&#xd;&#xa;&#x9;A.LETO_IZGRADNJE,&#xd;&#xa;&#x9;A.STEVILO_POSLOVNIH_PROSTOROV,&#xd;&#xa;&#x9;A.BRUTO_TLORISNA_POVRSINA,&#xd;&#xa;&#x9;A.EID_OBCINA,&#xd;&#xa;&#x9;CASE WHEN F.POVRSINA_ZPS > 0 THEN F.POVRSINA_ZPS&#xd;&#xa;&#x9;ELSE 0.1&#xd;&#xa;&#x9;END POVRSINA_ZPS_MERGE,&#xd;&#xa;&#x9;G.POVRSINA_ZPS,&#xd;&#xa;&#x9;PODROBNA_NAMENSKA_RABA_ID,&#xd;&#xa;&#x9;ETAZE.STEVILKA_PRITLICNE_ETAZE,&#xd;&#xa;&#x9;CASE WHEN ETAZE.STEVILKA_PRITLICNE_ETAZE IS NOT NULL AND STEVILO_ETAZ IS NOT NULL&#xd;&#xa;&#x9;THEN A.STEVILO_ETAZ - ETAZE.STEVILKA_PRITLICNE_ETAZE + 1 &#xd;&#xa;&#x9;WHEN STEVILO_ETAZ IS NOT NULL THEN A.STEVILO_ETAZ&#xd;&#xa;&#x9;ELSE NULL&#xd;&#xa;&#x9;END stevilo_nadzemnih_etaz,&#xd;&#xa;&#x9;ST_AREA (B.GEOM) AS AREA_STAVBE_NADZEMNI_TLORIS_POLIGON,&#xd;&#xa;&#x9;ST_AREA (C.GEOM) AS AREA_STAVBE_TLORIS_POLIGON,&#xd;&#xa;&#x9;ST_AREA (D.GEOM) AS AREA_DTM_BU_STAVBE_P,&#xd;&#xa;&#x9;ST_AREA (E.GEOM) AS AREA_STAVBE_TLORIS_ZPS_POLIGON,&#xd;&#xa;&#x9;ST_AREA (G.GEOM) AS AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG,&#xd;&#xa;&#x9;ST_AREA (F.GEOM) AS AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG,&#xd;&#xa;&#xd;&#xa;--K1_B2&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;CASE WHEN C.GEOM IS NOT NULL THEN 1 &#x9;&#x9;&#x9;&#x9;&#x9;ELSE 0 END AREA_BOOL_STAVBE_TLORIS_POLIGON,&#xd;&#xa;&#x9;CASE WHEN D.GEOM IS NOT NULL THEN 1 &#x9;&#x9;&#x9;&#x9;&#x9;ELSE 0 END AREA_BOOL_DTM_BU_STAVBE_P,&#xd;&#xa;&#x9;CASE WHEN E.GEOM IS NOT NULL THEN 1 &#x9;&#x9;&#x9;&#x9;&#x9;ELSE 0 END AREA_BOOL_STAVBE_TLORIS_ZPS_POLIGON,&#xd;&#xa;&#x9;CASE WHEN G.GEOM IS NOT NULL THEN 1 &#x9;&#x9;&#x9;&#x9;&#x9;ELSE 0 END AREA_BOOL_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG,&#xd;&#xa;--ST_AREA (H.GEOM) AS AREA_ZDRUZENA_GEOMETRIJA,&#xd;&#xa;&#x9;A.GEOM AS Centroid_stavbe,&#xd;&#xa;&#x9;B.GEOM AS Nadzemni_tloris,&#xd;&#xa;&#x9;C.GEOM AS Tloris_stavbe,&#xd;&#xa;&#x9;D.GEOM AS Tloris_DTM,&#xd;&#xa;&#x9;E.GEOM AS Tloris_ZPS,&#xd;&#xa;&#x9;G.GEOM AS Tloris_stavbe_parcele,&#xd;&#xa;&#x9;F.GEOM AS Tloris_stavbe_parcele_merge&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;--H.GEOM AS GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;BASEMAP.KN_SLO_STAVBE_STAVBE_TOCKA A&#xd;&#xa;&#x9;LEFT JOIN SCRATCH.KN_SLO_STAVBE_SLO_STAVBE_NADZEMNI_TLORIS_POLIGON B ON A.EID_STAVBA = B.EID_STAVBA::BIGINT&#xd;&#xa;&#x9;LEFT JOIN SCRATCH.KN_SLO_STAVBE_SLO_STAVBE_TLORIS_POLIGON C ON A.EID_STAVBA = C.EID_STAVBA::BIGINT&#xd;&#xa;&#x9;LEFT JOIN (&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;*&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;BASEMAP.DTM_BU_STAVBE_P&#xd;&#xa;&#x9;&#x9;WHERE&#xd;&#xa;&#x9;&#x9;&#x9;SID &lt;> 0&#xd;&#xa;&#x9;) D ON SUBSTRING(A.EID_STAVBA::TEXT, 10, 8)::BIGINT = D.SID&#xd;&#xa;&#x9;LEFT JOIN SCRATCH.KN_SLO_STAVBE_SLO_STAVBE_TLORIS_ZPS_POLIGON E ON A.EID_STAVBA = E.EID_STAVBA::BIGINT&#xd;&#xa;&#x9;LEFT JOIN SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG F ON A.EID_STAVBA = F.EID_STAVBA&#xd;&#xa;&#x9;LEFT JOIN SCRATCH.KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG G ON A.EID_STAVBA = G.EID_STAVBA&#xd;&#xa;&#x9;--LEFT JOIN SCRATCH.KN_SLO_STAVBE_STAVBE_POLY H ON A.EID_STAVBA = H.EID_STAVBA&#xd;&#xa;&#x9;LEFT JOIN scratch.kn_slo_stavbe_slo_etaze_merge ETAZE ON A.EID_STAVBA = ETAZE.EID_STAVBA&#xd;&#xa;&#xd;&#xa;&#x9;LEFT JOIN (SELECT * FROM basemap.kn_slo_nam_raba_poligon) NAM_RABA  on ST_INTERSECTS(A.GEOM, NAM_RABA.GEOM)&#xd;&#xa;&#xd;&#xa;-- IZBERI OBČINE ZA KATERE DELAŠ ANALIZO&#x9;&#xd;&#xa;WHERE&#xd;&#xa;&#x9;EID_OBCINA IN (&#xd;&#xa;&#x9;&#x9;' ||  @eid_obine  || '&#xd;&#xa;&#x9;)&#xd;&#xa;;&#xd;&#xa;&#xd;&#xa;--K1_C&#xd;&#xa;&#xd;&#xa;--K1_C1&#xd;&#xa;-- PRIPRAVI SLOJ ZDRUŽENIH STAVB, KATEREGA KASNEJE ŠE UREJAŠ Z ROČNIM PREGLEDOM&#xd;&#xa;DROP TABLE IF EXISTS rezultati.KATASTER_NEPREMICNIN;&#xd;&#xa;CREATE TABLE rezultati.KATASTER_NEPREMICNIN AS&#xd;&#xa;&#xd;&#xa;WITH cte_reklasifikacija as (&#xd;&#xa;SELECT&#xd;&#xa;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;KO_ID,&#xd;&#xa;&#x9;ST_STAVBE,&#xd;&#xa;&#x9;STEVILO_ETAZ,&#xd;&#xa;&#x9;STEVILO_STANOVANJ,&#xd;&#xa;&#x9;LETO_IZGRADNJE,&#xd;&#xa;&#x9;STEVILO_POSLOVNIH_PROSTOROV,&#xd;&#xa;&#x9;BRUTO_TLORISNA_POVRSINA,&#xd;&#xa;&#x9;EID_OBCINA,&#xd;&#xa;&#x9;POVRSINA_ZPS_MERGE,&#xd;&#xa;&#x9;POVRSINA_ZPS,&#xd;&#xa;&#x9;STEVILKA_PRITLICNE_ETAZE,&#xd;&#xa;&#x9;PODROBNA_NAMENSKA_RABA_ID,&#xd;&#xa;&#x9;stevilo_nadzemnih_etaz,&#xd;&#xa;&#x9;AREA_STAVBE_NADZEMNI_TLORIS_POLIGON,&#xd;&#xa;&#x9;AREA_STAVBE_TLORIS_POLIGON,&#xd;&#xa;&#x9;AREA_DTM_BU_STAVBE_P,&#xd;&#xa;&#x9;AREA_STAVBE_TLORIS_ZPS_POLIGON,&#xd;&#xa;&#x9;AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG,&#xd;&#xa;&#x9;AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG,&#xd;&#xa;&#x9;--AREA_ZDRUZENA_GEOMETRIJA,&#xd;&#xa;&#x9;-- GEOMETRIJA&#xd;&#xa;&#x9;Centroid_stavbe,&#xd;&#xa;&#x9;Nadzemni_tloris,&#xd;&#xa;&#x9;Tloris_stavbe,&#xd;&#xa;&#x9;Tloris_DTM,&#xd;&#xa;&#x9;Tloris_ZPS,&#xd;&#xa;&#x9;Tloris_stavbe_parcele,&#xd;&#xa;&#x9;--Tloris_stavbe_parcele_merge,&#xd;&#xa;&#x9;--&#xd;&#xa;&#xd;&#xa;--K1_C2&#xd;&#xa;&#x9;CASE WHEN Tloris_ZPS IS NOT NULL &#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AND ABS(AREA_STAVBE_TLORIS_ZPS_POLIGON - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE &lt; ' ||  @faktor_geom_tsp  || ' -- RAZLIKA MED SLOJEMA JE MANJ KOT 25%&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;THEN 1&#xd;&#xa;&#x9;&#x9;WHEN Nadzemni_tloris IS NOT NULL&#xd;&#xa;&#x9;&#x9;&#x9;AND ABS(AREA_STAVBE_NADZEMNI_TLORIS_POLIGON - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE &lt; ' ||  @faktor_geom_tsp  || '&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;THEN 2&#xd;&#xa; &#xd;&#xa;&#x9;&#x9;WHEN Tloris_stavbe_parcele IS NOT NULL&#xd;&#xa;&#x9;&#x9;&#x9;AND ABS(AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE &lt; ' ||  @faktor_geom_tsp  || '&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;THEN 3&#xd;&#xa;&#xd;&#xa;---------------------------------------------------------------------------------------------------------------&#x9;&#x9;&#xd;&#xa;       -- ČE OBSTAJA TA GEOMETRIJA PREVERI RAZMERJE MED POVPREČNO POVRŠINO GEOMETRIJ IN NJENO POVRŠINO&#xd;&#xa;&#x9;   -- ZARADI NAPAK V POVRŠINAH ZPS - NAPAČNO VPISANE POVRŠINE.&#xd;&#xa;&#x9;&#x9;WHEN &#x9;&#xd;&#xa;&#x9;&#x9;Tloris_ZPS IS NOT NULL AND &#x9;-- UPORABLJEN SLOJ&#xd;&#xa;&#x9;&#x9;ABS (&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;(AREA_STAVBE_TLORIS_ZPS_POLIGON -  -- UPORABLJEN SLOJ&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;-- povprečje površin&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;((AREA_STAVBE_TLORIS_POLIGON + AREA_DTM_BU_STAVBE_P + AREA_STAVBE_TLORIS_ZPS_POLIGON + AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG) -- seštevek površin&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;/&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;-- deljeno z&#x9;&#x9;&#x9;&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;(AREA_BOOL_STAVBE_TLORIS_POLIGON + AREA_BOOL_DTM_BU_STAVBE_P +&#x9;AREA_BOOL_STAVBE_TLORIS_ZPS_POLIGON + AREA_BOOL_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG)&#x9;-- številom stolpcev s površinami&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;---------------------- povprečje površin&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;) &#xd;&#xa;&#x9;&#x9;&#x9;&#x9;-- &#xd;&#xa;&#x9;&#x9;&#x9;&#x9;/ &#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_STAVBE_TLORIS_ZPS_POLIGON) &lt; ' ||   @faktor_geom   || '  -- površina UPORABLJENega SLOJa&#xd;&#xa;&#x9; THEN 4&#x9;&#x9;&#x9;&#x9;&#x9;-- UPORABLJEN SLOJ&#xd;&#xa;&#xd;&#xa;&#x9; WHEN &#x9;&#xd;&#xa;&#x9;&#x9;Tloris_stavbe_parcele IS NOT NULL AND&#x9;&#x9;&#x9;-- UPORABLJEN SLOJ&#xd;&#xa;&#x9;&#x9;ABS&#x9;(&#x9;&#x9;&#x9;&#x9;(AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG - -- UPORABLJEN SLOJ&#xd;&#xa;&#x9;&#x9;(&#xd;&#xa;&#x9;&#x9;&#x9;(&#x9;AREA_STAVBE_TLORIS_POLIGON +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_DTM_BU_STAVBE_P +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_STAVBE_TLORIS_ZPS_POLIGON +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG) /&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;(&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_BOOL_STAVBE_TLORIS_POLIGON +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_BOOL_DTM_BU_STAVBE_P +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_BOOL_STAVBE_TLORIS_ZPS_POLIGON +&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;AREA_BOOL_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG)&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;)) / AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG) &lt; ' ||   @faktor_geom   || ' -- UPORABLJEN SLOJ&#xd;&#xa;&#x9; THEN 5&#x9;&#x9;&#x9;&#x9;&#x9;-- UPORABLJEN SLOJ&#xd;&#xa;&#x9; &#xd;&#xa;&#x9; ------------------------------&#x9;&#xd;&#xa;&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;WHEN Tloris_stavbe IS NOT NULL&#xd;&#xa;&#x9;&#x9;&#x9;AND ABS(AREA_STAVBE_TLORIS_POLIGON - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE &lt; ' ||  @faktor_geom_tsp  || '&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;THEN 7&#xd;&#xa;&#xd;&#xa;&#x9;&#x9;WHEN Tloris_DTM IS NOT NULL&#xd;&#xa;&#x9;&#x9;&#x9;AND ABS(AREA_DTM_BU_STAVBE_P - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE &lt; ' ||  @faktor_geom_tsp  || '&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;THEN 8&#xd;&#xa; &#xd;&#xa; -- pogoj za stavbe, ki nimajo atributa površina stavbe na zemljišču&#xd;&#xa;        WHEN POVRSINA_ZPS_MERGE = 0.1&#xd;&#xa;            AND AREA_STAVBE_TLORIS_ZPS_POLIGON IS NOT NULL&#xd;&#xa;            AND AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG IS NOT NULL &#xd;&#xa;            AND AREA_STAVBE_TLORIS_ZPS_POLIGON = AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG&#xd;&#xa;                THEN 9&#xd;&#xa;        WHEN POVRSINA_ZPS_MERGE = 0.1&#xd;&#xa;            AND (AREA_STAVBE_TLORIS_ZPS_POLIGON IS NULL&#xd;&#xa;            OR AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG IS NULL)&#xd;&#xa;            AND AREA_STAVBE_TLORIS_ZPS_POLIGON &lt;> AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG&#xd;&#xa;            AND AREA_STAVBE_NADZEMNI_TLORIS_POLIGON = AREA_STAVBE_TLORIS_POLIGON&#xd;&#xa;                THEN 10&#xd;&#xa;&#xd;&#xa;-- pogoj za stavbe, ki iz katastra imajo le nadzemni tloris, ki je enak površini DTM&#x9;&#x9;&#xd;&#xa;        WHEN Nadzemni_tloris IS NOT NULL&#xd;&#xa;&#x9;&#x9;&#x9;AND ABS(AREA_STAVBE_NADZEMNI_TLORIS_POLIGON - POVRSINA_ZPS_MERGE)/POVRSINA_ZPS_MERGE > ' ||  @faktor_geom_tsp  || '&#xd;&#xa;&#x9;&#x9;&#x9;AND AREA_STAVBE_NADZEMNI_TLORIS_POLIGON = AREA_DTM_BU_STAVBE_P --pogoj je da so enaki in da so le te dve povrsine dostopne za to stavbo (ostale povrsine so null)&#xd;&#xa;                THEN 11&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;-- dodaj nadzemni toloris, če ni bolo dodanega nič drugega in le ta obstaja&#xd;&#xa;WHEN Nadzemni_tloris IS NOT NULL&#xd;&#xa;THEN  12&#xd;&#xa;&#xd;&#xa;--------------------------------------------------------------------------------------------------------------------&#xd;&#xa;&#x9;-- pogoj za stavbe, ki verjetno imajo napačen zapis površine_zps&#x9;&#xd;&#xa;&#x9;&#xd;&#xa;&#x9;WHEN Tloris_ZPS IS NOT NULL&#xd;&#xa;&#x9;&#x9;AND Tloris_stavbe_parcele IS NOT NULL&#xd;&#xa;&#x9;&#x9;AND AREA_STAVBE_TLORIS_ZPS_POLIGON = AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG&#xd;&#xa;&#x9;&#x9;&#x9;THEN 6&#xd;&#xa;&#xd;&#xa;-- dodaj točke, če še vedno ni nobene geometrije&#xd;&#xa;&#x9;ELSE 7&#xd;&#xa;&#xd;&#xa;&#x9;END geom_clas_id&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;--K1_D&#xd;&#xa;&#xd;&#xa;&#x9;--K1_D1&#xd;&#xa;&#xd;&#xa;FROM rezultati.GEOM&#xd;&#xa;)&#xd;&#xa;select &#xd;&#xa;&#xd;&#xa;&#x9;EID_STAVBA,&#xd;&#xa;&#x9;KO_ID,&#xd;&#xa;&#x9;ST_STAVBE,&#xd;&#xa;&#x9;STEVILO_ETAZ,&#xd;&#xa;&#x9;STEVILO_STANOVANJ,&#xd;&#xa;&#x9;LETO_IZGRADNJE,&#xd;&#xa;&#x9;STEVILO_POSLOVNIH_PROSTOROV,&#xd;&#xa;&#x9;BRUTO_TLORISNA_POVRSINA,&#xd;&#xa;&#x9;EID_OBCINA,&#xd;&#xa;&#x9;POVRSINA_ZPS_MERGE,&#xd;&#xa;&#x9;POVRSINA_ZPS,&#xd;&#xa;&#x9;STEVILKA_PRITLICNE_ETAZE,&#xd;&#xa;&#x9;stevilo_nadzemnih_etaz,&#xd;&#xa;&#x9;PODROBNA_NAMENSKA_RABA_ID,&#xd;&#xa;&#x9;AREA_STAVBE_NADZEMNI_TLORIS_POLIGON,&#xd;&#xa;&#x9;AREA_STAVBE_TLORIS_POLIGON,&#xd;&#xa;&#x9;AREA_DTM_BU_STAVBE_P,&#xd;&#xa;&#x9;AREA_STAVBE_TLORIS_ZPS_POLIGON,&#xd;&#xa;&#x9;AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_AGG,&#xd;&#xa;&#x9;AREA_KN_SLO_PARCELE_STAVBE_PARCELE_POLIGON_MERGE_AGG,&#xd;&#xa;&#x9;--AREA_ZDRUZENA_GEOMETRIJA,&#xd;&#xa;&#x9;-- GEOMETRIJA&#xd;&#xa;&#x9;--Centroid_stavbe,&#xd;&#xa;&#x9;--Nadzemni_tloris,&#xd;&#xa;&#x9;--Tloris_stavbe,&#xd;&#xa;&#x9;--Tloris_DTM,&#xd;&#xa;&#x9;--Tloris_ZPS,&#xd;&#xa;&#x9;--Tloris_stavbe_parcele,&#xd;&#xa;&#x9;--Tloris_stavbe_parcele_merge,&#x9;&#xd;&#xa;b.*,&#xd;&#xa;&#xd;&#xa;&#x9;--K1_D2&#xd;&#xa;CASE &#xd;&#xa;&#x9;WHEN geom_clas_id = 1 THEN Tloris_ZPS&#xd;&#xa;&#x9;WHEN geom_clas_id = 2 THEN Nadzemni_tloris&#xd;&#xa;&#x9;WHEN geom_clas_id = 3 THEN Tloris_stavbe_parcele&#xd;&#xa;&#x9;WHEN geom_clas_id = 4 THEN Tloris_ZPS&#xd;&#xa;&#x9;WHEN geom_clas_id = 5 THEN Tloris_stavbe_parcele&#xd;&#xa;&#x9;WHEN geom_clas_id = 6 THEN Tloris_ZPS&#xd;&#xa;&#x9;WHEN geom_clas_id = 7 THEN Tloris_stavbe&#xd;&#xa;&#x9;WHEN geom_clas_id = 8 THEN Tloris_DTM&#xd;&#xa;&#x9;WHEN geom_clas_id = 9 THEN Tloris_ZPS&#xd;&#xa;&#x9;WHEN geom_clas_id = 10 THEN Nadzemni_tloris&#xd;&#xa;&#x9;WHEN geom_clas_id = 11 THEN Nadzemni_tloris&#xd;&#xa;&#x9;WHEN geom_clas_id = 12 THEN Nadzemni_tloris&#xd;&#xa;&#x9;&#xd;&#xa;END GEOM&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;from&#xd;&#xa;cte_reklasifikacija a&#xd;&#xa;left join scratch.kn_slo_clas_geom b using (geom_clas_id);&#xd;&#xa;&#xd;&#xa;--- K1_D3&#xd;&#xa;&#xd;&#xa;CREATE INDEX ON rezultati.KATASTER_NEPREMICNIN USING GIST (GEOM);&#xd;&#xa;ALTER TABLE rezultati.KATASTER_NEPREMICNIN ADD COLUMN GID SERIAL PRIMARY KEY;&#xd;&#xa;ALTER TABLE rezultati.KATASTER_NEPREMICNIN ADD COLUMN IF NOT EXISTS NADOMESTNA_GEOMETRIJA TEXT;&#xd;&#xa;ALTER TABLE rezultati.KATASTER_NEPREMICNIN ADD COLUMN IF NOT EXISTS povrsina NUMERIC;&#xd;&#xa;UPDATE rezultati.KATASTER_NEPREMICNIN&#xd;&#xa;SET povrsina = ST_Area(geom);&#xd;&#xa;&#xd;&#xa;ALTER TABLE rezultati.KATASTER_NEPREMICNIN &#xd;&#xa;ADD COLUMN IF NOT EXISTS stevilo_prekrivanj INTEGER;&#xd;&#xa;&#xd;&#xa;-- Ažuriranje glavne tabele sa brojem prekrivanja direktno&#xd;&#xa;WITH prekrivanja AS (&#xd;&#xa;    SELECT &#xd;&#xa;        a.EID_STAVBA AS object_id,&#xd;&#xa;        COUNT(b.EID_STAVBA) AS stevilo_prekrivanj&#xd;&#xa;    FROM &#xd;&#xa;        rezultati.KATASTER_NEPREMICNIN a&#xd;&#xa;    LEFT JOIN &#xd;&#xa;        rezultati.KATASTER_NEPREMICNIN b&#xd;&#xa;    ON &#xd;&#xa;        ST_DWithin(a.geom, b.geom, 1.5)  -- Radijus od 2 metra&#xd;&#xa;        AND a.EID_STAVBA &lt;> b.EID_STAVBA  -- Ne uspoređuj isti objekt s njim samim&#xd;&#xa;    GROUP BY &#xd;&#xa;        a.EID_STAVBA&#xd;&#xa;)&#xd;&#xa;UPDATE &#xd;&#xa;    rezultati.KATASTER_NEPREMICNIN g&#xd;&#xa;SET &#xd;&#xa;    stevilo_prekrivanj = COALESCE(p.stevilo_prekrivanj, 0)&#xd;&#xa;FROM &#xd;&#xa;    prekrivanja p&#xd;&#xa;WHERE &#xd;&#xa;    g.EID_STAVBA = p.object_id;&#xd;&#xa;&#xd;&#xa;DROP TABLE IF EXISTS rezultati.KATASTER_STANOVANJSKIH_STAVB;&#xd;&#xa;CREATE TABLE rezultati.KATASTER_STANOVANJSKIH_STAVB AS&#x9;&#xd;&#xa;SELECT *&#xd;&#xa;FROM rezultati.KATASTER_NEPREMICNIN&#xd;&#xa;WHERE &#xd;&#xa;STEVILO_STANOVANJ > 0&#xd;&#xa;AND podrobna_namenska_raba_id &lt;= 5&#xd;&#xa;AND NOT (povrsina > 400 AND STEVILO_STANOVANJ &lt;= 2)&#xd;&#xa;AND NOT (STEVILO_STANOVANJ = 1 &#xd;&#xa;        AND stevilo_nadzemnih_etaz = 1 &#xd;&#xa;        AND stevilo_prekrivanj &lt;= 1  &#xd;&#xa;        AND povrsina &lt; 75)&#xd;&#xa;AND NOT(STEVILO_STANOVANJ = 1 AND povrsina &lt; 45 AND stevilo_prekrivanj > 3)&#xd;&#xa;AND NOT(povrsina &lt; 35&#xd;&#xa;&#x9;AND STEVILO_STANOVANJ = 1&#xd;&#xa;&#x9;AND stevilo_nadzemnih_etaz = 1&#xd;&#xa;&#x9;AND stevilo_prekrivanj >= 1 );&#xd;&#xa;CREATE INDEX ON rezultati.KATASTER_STANOVANJSKIH_STAVB USING GIST (GEOM);&#xd;&#xa;ALTER TABLE rezultati.KATASTER_STANOVANJSKIH_STAVB ADD COLUMN ID_ss SERIAL PRIMARY KEY;&#x9;&#xd;&#xa;&#x9;'&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#x9;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;" type="QString"/>
+            <Option name="source" value="3" type="int"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+    <Option name="native:postgisexecutesql_2" type="Map">
+      <Option name="active" value="true" type="bool"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" value="native:postgisexecutesql" type="QString"/>
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="Priprava tabele za ročni pregled" type="QString"/>
+        <Option name="component_height" value="31.000000000000004" type="double"/>
+        <Option name="component_pos_x" value="1079" type="double"/>
+        <Option name="component_pos_y" value="490.5" type="double"/>
+        <Option name="component_width" value="182" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="PostgreSQL execute SQL" type="QString"/>
+      <Option name="component_height" value="30" type="double"/>
+      <Option name="component_pos_x" value="784" type="double"/>
+      <Option name="component_pos_y" value="489" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="dependencies"/>
+      <Option name="id" value="native:postgisexecutesql_2" type="QString"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="true" type="bool"/>
+      <Option name="params" type="Map">
+        <Option name="DATABASE" type="List">
+          <Option type="Map">
+            <Option name="source" value="2" type="int"/>
+            <Option name="static_value" value="test" type="QString"/>
+          </Option>
+        </Option>
+        <Option name="SQL" type="List">
+          <Option type="Map">
+            <Option name="expression" value="'DROP TABLE IF EXISTS rezultati.NADOMESTNA_GEOMETRIJA;&#xd;&#xa;&#xd;&#xa;CREATE TABLE IF NOT EXISTS rezultati.NADOMESTNA_GEOMETRIJA (&#xd;&#xa;&#x9;GID SERIAL PRIMARY KEY,&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA TEXT&#xd;&#xa;);&#xd;&#xa;INSERT INTO&#xd;&#xa;&#x9;rezultati.NADOMESTNA_GEOMETRIJA (NADOMESTNA_GEOMETRIJA)&#xd;&#xa;VALUES&#xd;&#xa;&#x9;(''Tloris zemljišča pod stavbo''),&#xd;&#xa;&#x9;(''Tloris nadzemnega dela stavbe''),&#xd;&#xa;&#x9;(''Tloris stavbe na paceli''),&#xd;&#xa;&#x9;(''Tloris stavbe''),&#xd;&#xa;&#x9;(''Tloris stavbe iz Državnega topografskega modela'');'&#xd;&#xa;--določi nadomestno geometrijo v QGIS-u v stolpcu NADOMESTNA_GEOMETRIJA" type="QString"/>
+            <Option name="source" value="3" type="int"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="designerParameterValues"/>
+  <Option name="groupBoxes"/>
+  <Option name="help"/>
+  <Option name="internal_version" value="Version2" type="QString"/>
+  <Option name="modelVariables"/>
+  <Option name="model_group" value="GIS ORODJE" type="QString"/>
+  <Option name="model_name" value="01_Priprava katastra stanovanjskih stavb" type="QString"/>
+  <Option name="outputGroup" value="" type="QString"/>
+  <Option name="outputOrder"/>
+  <Option name="parameterDefinitions" type="Map">
+    <Option name="eid_obine" type="Map">
+      <Option name="default" value="'110200000110278814', '110200000110274821', '110200000110276107'" type="QString"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option name="description" value="EID_OBČINE" type="QString"/>
+      <Option name="flags" value="0" type="int"/>
+      <Option name="help" value="" type="QString"/>
+      <Option name="metadata"/>
+      <Option name="multiline" value="false" type="bool"/>
+      <Option name="name" value="eid_obine" type="QString"/>
+      <Option name="parameter_type" value="string" type="QString"/>
+    </Option>
+    <Option name="faktor_geom" type="Map">
+      <Option name="default" value="0.05" type="QString"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option name="description" value="FAKTOR_GEOM" type="QString"/>
+      <Option name="flags" value="0" type="int"/>
+      <Option name="help" value="" type="QString"/>
+      <Option name="metadata"/>
+      <Option name="multiline" value="false" type="bool"/>
+      <Option name="name" value="faktor_geom" type="QString"/>
+      <Option name="parameter_type" value="string" type="QString"/>
+    </Option>
+    <Option name="faktor_geom_tsp" type="Map">
+      <Option name="default" value="0.3" type="QString"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option name="description" value="FAKTOR_GEOM_TSP" type="QString"/>
+      <Option name="flags" value="0" type="int"/>
+      <Option name="help" value="" type="QString"/>
+      <Option name="metadata"/>
+      <Option name="multiline" value="false" type="bool"/>
+      <Option name="name" value="faktor_geom_tsp" type="QString"/>
+      <Option name="parameter_type" value="string" type="QString"/>
+    </Option>
+  </Option>
+  <Option name="parameterOrder"/>
+  <Option name="parameters" type="Map">
+    <Option name="eid_obine" type="Map">
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="Enolični identifikator občine" type="QString"/>
+        <Option name="component_height" value="30" type="double"/>
+        <Option name="component_pos_x" value="223" type="double"/>
+        <Option name="component_pos_y" value="292" type="double"/>
+        <Option name="component_width" value="332" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="eid_obine" type="QString"/>
+      <Option name="component_height" value="30" type="double"/>
+      <Option name="component_pos_x" value="532" type="double"/>
+      <Option name="component_pos_y" value="294" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="name" value="eid_obine" type="QString"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="true" type="bool"/>
+    </Option>
+    <Option name="faktor_geom" type="Map">
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="Faktor dopustne razlike med geometrijami" type="QString"/>
+        <Option name="component_height" value="30" type="double"/>
+        <Option name="component_pos_x" value="223.5" type="double"/>
+        <Option name="component_pos_y" value="184" type="double"/>
+        <Option name="component_width" value="333" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="faktor_geom" type="QString"/>
+      <Option name="component_height" value="30" type="double"/>
+      <Option name="component_pos_x" value="532" type="double"/>
+      <Option name="component_pos_y" value="185" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="name" value="faktor_geom" type="QString"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="true" type="bool"/>
+    </Option>
+    <Option name="faktor_geom_tsp" type="Map">
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="Faktor dopustne razlike med geometrijami in površino tlorisa stavbe na parceli" type="QString"/>
+        <Option name="component_height" value="30" type="double"/>
+        <Option name="component_pos_x" value="224.5" type="double"/>
+        <Option name="component_pos_y" value="239" type="double"/>
+        <Option name="component_width" value="333" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="faktor_geom_tsp" type="QString"/>
+      <Option name="component_height" value="30" type="double"/>
+      <Option name="component_pos_x" value="532" type="double"/>
+      <Option name="component_pos_y" value="240" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="name" value="faktor_geom_tsp" type="QString"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="true" type="bool"/>
+    </Option>
+  </Option>
+</Option>
