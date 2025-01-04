@@ -16,7 +16,7 @@ Raziskava je namenjena izboljšanju sistematičnega evidentiranja stavbnih tipol
 ## Pomen
 Razvito orodje predstavlja pomemben korak k modernizaciji analize prostorskih podatkov v Sloveniji. Njegova zasnova omogoča enostavno prilagajanje in nadgradnjo za širšo uporabo v različnih prostorskih raziskavah.
 
-Za več informacij in dostop do orodja obiščite [objavo na Repozitoriju Univeze v Ljubljani](https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv)
+Za več informacij in dostop do orodja obiščite [objavo na Repozitoriju Univeze v Ljubljani](https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv).
 
 
 
@@ -45,11 +45,11 @@ Po uspešni izvedbi poizvedbe boste v spodnjem delu okna prejeli potrdilo o uspe
 Obiščite uradno spletno stran QGIS in prenesite najnovejšo stabilno različico, združljivo z vašim operacijskim sistemom. Zaženite namestitveni program in sledite korakom namestitvenega čarovnika. QGIS privzeto namesti vse potrebne knjižnice za delo s prostorskimi podatki. Po namestitvi QGIS-a, sledite tem korakom, da ga povežete s svojo PostgreSQL/PostGIS bazo podatkov:
 V QGIS v meniju Browser poiščite PostgreSQL. Desni klik na PostgreSQL in izberite New Connection (nova povezava).
 V oknu za povezavo vnesite naslednje podatke:
-Name: ime povezave (predlagamo isto ime kot za bazo - test)
-Host: localhost
-Port: 5432
-Database: ime vaše baze (test)
-Kliknite na Test Connection, da preverite povezavo, nato vnesite:
+Name: ime povezave (predlagamo isto ime kot za bazo - test)<br/>
+Host: localhost<br/>
+Port: 5432<br/>
+Database: ime vaše baze (test)<br/>
+Kliknite na Test Connection, da preverite povezavo, nato vnesite:<br/>
 Username: postgres
 Password: geslo, ki ste ga nastavili med namestitvijo PostgreSQL.
 Če je povezava uspešna, boste prejeli obvestilo o uspešni povezavi.
