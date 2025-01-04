@@ -65,11 +65,11 @@ GIS analitičneg orodja za klasifikacijo stanovanjskih stavb.
 
 # Vnos podatkov in GIS analitičneg orodja
 Podatki in orodje bodo objavljeni skupaj z nalogo na repozitoriju Univerze v Ljubljani, kjer bodo dostopne naslednje mape:
-• Mapa PODATKI vsebuje mapo RESTORE z direktorijem podatkov in schem, potrebnih za delovanje orodja, ter navodila za obnovitev (restore) direktorija.
-• Mapa GIS ORODJE vključuje SQL poizvedbo in mapo s petimi modeli analitičnih sklopov.
-• Mapa ŠTUDIJA PRIMERA vsebuje geopackage (rezultati.gpkg) z vsemi rezultati študije primera.
-• Mapa PRIROČNIK vsebuje PDF različico magistrske naloge, ki služi kot vodnik za uporabo orodja.
-• Poleg tega je priložen še QGIS projekt (project_template.qgz), ki je prazen, vendar že vsebuje nastavljeno orodje. Ta projekt je namenjen uporabi pri lastnih študijah.
+- Mapa PODATKI vsebuje mapo RESTORE z direktorijem podatkov in schem, potrebnih za delovanje orodja, ter navodila za obnovitev (restore) direktorija.
+- Mapa GIS ORODJE vključuje SQL poizvedbo in mapo s petimi modeli analitičnih sklopov.
+- Mapa ŠTUDIJA PRIMERA vsebuje geopackage (rezultati.gpkg) z vsemi rezultati študije primera.
+- Mapa PRIROČNIK vsebuje PDF različico magistrske naloge, ki služi kot vodnik za uporabo orodja.
+- Poleg tega je priložen še QGIS projekt (project_template.qgz), ki je prazen, vendar že vsebuje nastavljeno orodje. Ta projekt je namenjen uporabi pri lastnih študijah.
 
 Vnos podatkov v bazo:
 V orodju PgAdmin izberite ustvarjeno bazo podatkov (test), kamor želite uvoziti pripravljene podatke.
