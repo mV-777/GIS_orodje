@@ -44,19 +44,19 @@ Po uspešni izvedbi poizvedbe boste v spodnjem delu okna prejeli potrdilo o uspe
 4. Namestitev QGIS
 Obiščite uradno spletno stran QGIS in prenesite najnovejšo stabilno različico, združljivo z vašim operacijskim sistemom. Zaženite namestitveni program in sledite korakom namestitvenega čarovnika. QGIS privzeto namesti vse potrebne knjižnice za delo s prostorskimi podatki. Po namestitvi QGIS-a, sledite tem korakom, da ga povežete s svojo PostgreSQL/PostGIS bazo podatkov:
 V QGIS v meniju Browser poiščite PostgreSQL. Desni klik na PostgreSQL in izberite New Connection (nova povezava).
-V oknu za povezavo vnesite naslednje podatke:
+V oknu za povezavo vnesite naslednje podatke:<br/>
 Name: ime povezave (predlagamo isto ime kot za bazo - test)<br/>
 Host: localhost<br/>
 Port: 5432<br/>
 Database: ime vaše baze (test)<br/>
 Kliknite na Test Connection, da preverite povezavo, nato vnesite:<br/>
-Username: postgres
-Password: geslo, ki ste ga nastavili med namestitvijo PostgreSQL.
-Če je povezava uspešna, boste prejeli obvestilo o uspešni povezavi.
-Nastavite dodatne možnosti:
+Username: postgres<br/>
+Password: geslo, ki ste ga nastavili med namestitvijo PostgreSQL.<br/>
+Če je povezava uspešna, boste prejeli obvestilo o uspešni povezavi.<br/>
+Nastavite dodatne možnosti:<br/>
 Odkljukajte Also list tables with no geometry in Allow saving/loading QGIS projects in the database.
-Kliknite OK, da potrdite povezavo.
-Koristna povezava za integracijo PostGIS v QGIS:
+Kliknite OK, da potrdite povezavo.<br/>
+Koristna povezava za integracijo PostGIS v QGIS:<br/>
 https://www.line-45.com/post/using-qgis-postgis-dynamic-duo
 
 S temi koraki ste uspešno namestili in povezali PostgreSQL, PostGIS in QGIS za delo z
