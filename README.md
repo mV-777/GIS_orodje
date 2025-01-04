@@ -2,28 +2,28 @@
 
 To orodje je rezultat magistrske naloge, ki se osredotoča na razvoj GIS orodja za avtomatizirano klasifikacijo tipologij stanovanjskih stavb v Sloveniji. Glavni namen je reševanje pomanjkanja enotne evidence o stavbnih tipologijah, kar predstavlja oviro za učinkovito analizo in vrednotenje prostorskih podatkov.
 
-# Ključne funkcionalnosti
+## Ključne funkcionalnosti
 - Morfološka analiza stavb: Orodje uporablja podatke iz katastra nepremičnin in vnaprej določena pravila za avtomatizirano razvrščanje stavb.
 - Klasifikacija stavb: Stavbe razvršča na prostostoječe in povezane, z nadaljnjo delitvijo glede na tipologijo in vzorec zazidave.
 - Podpora uporabnikom: Raziskava vključuje priročnik, ki jasno povezuje teoretične koncepte z implementacijo orodja.
 
-# Namen in cilji
+## Namen in cilji
 Raziskava je namenjena izboljšanju sistematičnega evidentiranja stavbnih tipologij v Sloveniji, s ciljem prispevati k:
 - učinkovitejšemu prostorskemu načrtovanju,
 - trajnostnemu razvoju urbanih območij,
 - vzpostavitvi natančne evidence stavb, ki podpira nadaljnje raziskave in nadgradnje prostorskih podatkov.
 
-# Pomen
+## Pomen
 Razvito orodje predstavlja pomemben korak k modernizaciji analize prostorskih podatkov v Sloveniji. Njegova zasnova omogoča enostavno prilagajanje in nadgradnjo za širšo uporabo v različnih prostorskih raziskavah.
 
-Za več informacij in dostop do orodja obiščite https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv
+Za več informacij in dostop do orodja obiščite [objavo na Repozitoriju Univeze v Ljubljani] (https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv)
 
 
 
 # Priprava programskih orodji ter uvoz podatkov in orodja
 
 
-# Navodila za namestitev programskih orodji
+## Navodila za namestitev programskih orodji
 1. Namestitev PostgreSQL
 Obiščite uradno spletno stran PostgreSQL in prenesite najnovejšo različico, primerno za vaš operacijski sistem. Zaženite preneseni namestitveni program in sledite korakom namestitvenega čarovnika. Priporočljivo je, da ohranite privzete nastavitve, razen če imate specifične zahteve. Med namestitvijo boste morali nastaviti geslo za privzeti uporabniški račun postgres. Priporočljivo je, da izberete močno geslo in ga zabeležite, saj ga boste potrebovali za dostop do baze. Po zaključku namestitve se bo odprl StackBuilder, ki omogoča namestitev dodatnih razširitev. Izberite namestitev PostgreSQL in nadaljujte z namestitvijo.
 
@@ -63,7 +63,7 @@ S temi koraki ste uspešno namestili in povezali PostgreSQL, PostGIS in QGIS za 
 geografsko-prostorskimi podatki. Naslednji korak je vnos potrebnih podatkov o stavbah in
 GIS analitičneg orodja za klasifikacijo stanovanjskih stavb.
 
-# Vnos podatkov in GIS analitičneg orodja
+## Vnos podatkov in GIS analitičneg orodja
 Podatki in orodje bodo objavljeni skupaj z nalogo na repozitoriju Univerze v Ljubljani, kjer bodo dostopne naslednje mape:
 - Mapa PODATKI vsebuje mapo RESTORE z direktorijem podatkov in schem, potrebnih za delovanje orodja, ter navodila za obnovitev (restore) direktorija.
 - Mapa GIS ORODJE vključuje SQL poizvedbo in mapo s petimi modeli analitičnih sklopov.
@@ -72,10 +72,10 @@ Podatki in orodje bodo objavljeni skupaj z nalogo na repozitoriju Univerze v Lju
 - Poleg tega je priložen še QGIS projekt (project_template.qgz), ki je prazen, vendar že vsebuje nastavljeno orodje. Ta projekt je namenjen uporabi pri lastnih študijah.
 
 Vnos podatkov v bazo:
-V orodju PgAdmin izberite ustvarjeno bazo podatkov (test), kamor želite uvoziti pripravljene podatke.
-Z desnim klikom na bazo izberite Restore.
-V zavihku General za Format izberete Directory, nato poiščite mapo RESTORE v polju Filename.
-V zavihku Data Options odkljukajte možnosti Owner in Privileges.
+V orodju **PgAdmin** izberite ustvarjeno bazo podatkov (test), kamor želite uvoziti pripravljene podatke.
+Z desnim klikom na bazo izberite **Restore**.
+V zavihku _General_ za _Format_ izberete Directory, nato poiščite mapo RESTORE v polju _Filename_.
+V zavihku _Data Options_ odkljukajte možnosti Owner in Privileges.
 V zavihku Query Options odkljukajte možnosti Clean Before Restore in Include If Exists Clause.
 V zavihku Table Options pustite privzete nastavitve.
 V zavihku Options odkljukajte možnost Triggers.
@@ -86,5 +86,5 @@ https://www.pgadmin.org/docs/pgadmin4/development/restore_dialog.html
 Z uspešnim uvozom podatkov je orodje pripravljeno za uporabo.
 
 
-# Uvoz orodja v QGIS
-Orodja ni potrebno uvoziti. V QGIS projektu “project_template” je orodje že nastavljeno v Processing Toolbox pod Project model - “GIS ORODJE”.
+## Uvoz orodja v QGIS
+Orodja ni potrebno uvoziti. V QGIS projektu **“project_template”** je orodje že nastavljeno v _Processing Toolbox_ pod _Project model_ - “GIS ORODJE”.
