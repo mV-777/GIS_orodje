@@ -16,7 +16,7 @@ Raziskava je namenjena izboljšanju sistematičnega evidentiranja stavbnih tipol
 ## Pomen
 Razvito orodje predstavlja pomemben korak k modernizaciji analize prostorskih podatkov v Sloveniji. Njegova zasnova omogoča enostavno prilagajanje in nadgradnjo za širšo uporabo v različnih prostorskih raziskavah.
 
-Za več informacij in dostop do orodja obiščite [objavo na Repozitoriju Univeze v Ljubljani] (https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv)
+Za več informacij in dostop do orodja obiščite [objavo na Repozitoriju Univeze v Ljubljani](https://repozitorij.uni-lj.si/IzpisGradiva.php?id=164021&lang=slv)
 
 
 
