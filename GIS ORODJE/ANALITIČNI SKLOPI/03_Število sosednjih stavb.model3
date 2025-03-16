@@ -1,0 +1,57 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option name="children" type="Map">
+    <Option name="native:postgisexecutesql_1" type="Map">
+      <Option name="active" value="true" type="bool"/>
+      <Option name="alg_config"/>
+      <Option name="alg_id" value="native:postgisexecutesql" type="QString"/>
+      <Option name="color" value="" type="QString"/>
+      <Option name="comment" type="Map">
+        <Option name="color" value="" type="QString"/>
+        <Option name="component_description" value="" type="QString"/>
+        <Option name="component_height" value="60" type="double"/>
+        <Option name="component_pos_x" value="320" type="double"/>
+        <Option name="component_pos_y" value="115" type="double"/>
+        <Option name="component_width" value="100" type="double"/>
+        <Option name="outputs_collapsed" value="true" type="bool"/>
+        <Option name="parameters_collapsed" value="true" type="bool"/>
+      </Option>
+      <Option name="component_description" value="PostgreSQL execute SQL" type="QString"/>
+      <Option name="component_height" value="30" type="double"/>
+      <Option name="component_pos_x" value="363" type="double"/>
+      <Option name="component_pos_y" value="155" type="double"/>
+      <Option name="component_width" value="200" type="double"/>
+      <Option name="dependencies"/>
+      <Option name="id" value="native:postgisexecutesql_1" type="QString"/>
+      <Option name="outputs"/>
+      <Option name="outputs_collapsed" value="true" type="bool"/>
+      <Option name="parameters_collapsed" value="false" type="bool"/>
+      <Option name="params" type="Map">
+        <Option name="DATABASE" type="List">
+          <Option type="Map">
+            <Option name="source" value="2" type="int"/>
+            <Option name="static_value" value="test" type="QString"/>
+          </Option>
+        </Option>
+        <Option name="SQL" type="List">
+          <Option type="Map">
+            <Option name="expression" value="'WITH sosedi AS (&#xa;    SELECT &#xa;        a.EID_STAVBA AS object_id,&#xa;        COUNT(b.EID_STAVBA) AS stevilo_prekrivanj&#xa;    FROM &#xa;        rezultati.Kataster_stanovanjskih_stavb a&#xa;    LEFT JOIN &#xa;        rezultati.Kataster_stanovanjskih_stavb b&#xa;    ON &#xa;        ST_DWithin(a.geom, b.geom, 1.5)&#xa;        AND a.EID_STAVBA &lt;> b.EID_STAVBA &#xa;    GROUP BY &#xa;        a.EID_STAVBA&#xa;)&#xa;UPDATE &#xa;    rezultati.Kataster_stanovanjskih_stavb g&#xa;SET &#xa;    stevilo_prekrivanj = COALESCE(p.stevilo_prekrivanj, 0)&#xa;FROM &#xa;    sosedi p&#xa;WHERE &#xa;    g.EID_STAVBA = p.object_id;&#xa;&#xa;'" type="QString"/>
+            <Option name="source" value="3" type="int"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="designerParameterValues"/>
+  <Option name="groupBoxes"/>
+  <Option name="help"/>
+  <Option name="internal_version" value="Version2" type="QString"/>
+  <Option name="modelVariables"/>
+  <Option name="model_group" value="GIS ORODJE" type="QString"/>
+  <Option name="model_name" value="03_Število sosednjih stavb" type="QString"/>
+  <Option name="outputGroup" value="" type="QString"/>
+  <Option name="outputOrder"/>
+  <Option name="parameterDefinitions"/>
+  <Option name="parameterOrder"/>
+  <Option name="parameters"/>
+</Option>

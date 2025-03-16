@@ -1,0 +1,57 @@
+<!DOCTYPE model>
+<Option type="Map">
+  <Option type="Map" name="children">
+    <Option type="Map" name="native:postgisexecutesql_1">
+      <Option type="bool" name="active" value="true"/>
+      <Option name="alg_config"/>
+      <Option type="QString" name="alg_id" value="native:postgisexecutesql"/>
+      <Option type="QString" name="color" value=""/>
+      <Option type="Map" name="comment">
+        <Option type="QString" name="color" value=""/>
+        <Option type="QString" name="component_description" value=""/>
+        <Option type="double" name="component_height" value="60"/>
+        <Option type="double" name="component_pos_x" value="320"/>
+        <Option type="double" name="component_pos_y" value="115"/>
+        <Option type="double" name="component_width" value="100"/>
+        <Option type="bool" name="outputs_collapsed" value="true"/>
+        <Option type="bool" name="parameters_collapsed" value="true"/>
+      </Option>
+      <Option type="QString" name="component_description" value="PostgreSQL execute SQL"/>
+      <Option type="double" name="component_height" value="30"/>
+      <Option type="double" name="component_pos_x" value="372"/>
+      <Option type="double" name="component_pos_y" value="230"/>
+      <Option type="double" name="component_width" value="200"/>
+      <Option name="dependencies"/>
+      <Option type="QString" name="id" value="native:postgisexecutesql_1"/>
+      <Option name="outputs"/>
+      <Option type="bool" name="outputs_collapsed" value="true"/>
+      <Option type="bool" name="parameters_collapsed" value="true"/>
+      <Option type="Map" name="params">
+        <Option type="List" name="DATABASE">
+          <Option type="Map">
+            <Option type="int" name="source" value="2"/>
+            <Option type="QString" name="static_value" value="test"/>
+          </Option>
+        </Option>
+        <Option type="List" name="SQL">
+          <Option type="Map">
+            <Option type="QString" name="expression" value="'UPDATE rezultati.Kataster_stanovanjskih_stavb A&#xd;&#xa;SET&#xd;&#xa;&#x9;GEOM = SUB.GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;(&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;EID_STAVBA, Tloris_ZPS AS GEOM&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;rezultati.GEOM&#xd;&#xa;&#x9;) SUB&#xd;&#xa;WHERE&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA = ''Tloris zemljišča pod stavbo''&#xd;&#xa;&#x9;AND A.EID_STAVBA = SUB.EID_STAVBA;&#xd;&#xa;&#xd;&#xa;UPDATE rezultati.Kataster_stanovanjskih_stavb A&#xd;&#xa;SET&#xd;&#xa;&#x9;GEOM = SUB.GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;(&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;EID_STAVBA, Nadzemni_tloris AS GEOM&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;rezultati.GEOM&#xd;&#xa;&#x9;) SUB&#xd;&#xa;WHERE&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA = ''Tloris nadzemnega dela stavbe''&#xd;&#xa;&#x9;AND A.EID_STAVBA = SUB.EID_STAVBA;&#xd;&#xa;&#xd;&#xa;UPDATE rezultati.Kataster_stanovanjskih_stavb A&#xd;&#xa;SET&#xd;&#xa;&#x9;GEOM = SUB.GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;(&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;EID_STAVBA, Tloris_stavbe_parcele AS GEOM&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;rezultati.GEOM&#xd;&#xa;&#x9;) SUB&#xd;&#xa;WHERE&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA = ''Tloris stavbe na paceli''&#xd;&#xa;&#x9;AND A.EID_STAVBA = SUB.EID_STAVBA;&#xd;&#xa;&#xd;&#xa;UPDATE rezultati.Kataster_stanovanjskih_stavb A&#xd;&#xa;SET&#xd;&#xa;&#x9;GEOM = SUB.GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;(&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;EID_STAVBA, &#xd;&#xa;&#x9;&#x9;&#x9;Tloris_stavbe AS GEOM&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;rezultati.GEOM&#xd;&#xa;&#x9;) SUB&#xd;&#xa;WHERE&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA = ''Tloris stavbe''&#xd;&#xa;&#x9;AND A.EID_STAVBA = SUB.EID_STAVBA;&#xd;&#xa;&#xd;&#xa;UPDATE rezultati.Kataster_stanovanjskih_stavb A&#xd;&#xa;SET&#xd;&#xa;&#x9;GEOM = SUB.GEOM&#xd;&#xa;FROM&#xd;&#xa;&#x9;(&#xd;&#xa;&#x9;&#x9;SELECT&#xd;&#xa;&#x9;&#x9;&#x9;EID_STAVBA, &#xd;&#xa;&#x9;&#x9;&#x9;Tloris_DTM AS GEOM&#xd;&#xa;&#x9;&#x9;FROM&#xd;&#xa;&#x9;&#x9;&#x9;rezultati.GEOM&#xd;&#xa;&#x9;) SUB&#xd;&#xa;WHERE&#xd;&#xa;&#x9;NADOMESTNA_GEOMETRIJA = ''Tloris stavbe iz Državnega topografskega modela''&#xd;&#xa;&#x9;AND A.EID_STAVBA = SUB.EID_STAVBA;&#xd;&#xa;&#x9;&#xd;&#xa;'&#xd;&#xa;"/>
+            <Option type="int" name="source" value="3"/>
+          </Option>
+        </Option>
+      </Option>
+    </Option>
+  </Option>
+  <Option name="designerParameterValues"/>
+  <Option name="groupBoxes"/>
+  <Option name="help"/>
+  <Option type="QString" name="internal_version" value="Version2"/>
+  <Option name="modelVariables"/>
+  <Option type="QString" name="model_group" value="GIS ORODJE"/>
+  <Option type="QString" name="model_name" value="02_Posodobitev katastra stanovanjskih stavb"/>
+  <Option type="QString" name="outputGroup" value=""/>
+  <Option name="outputOrder"/>
+  <Option name="parameterDefinitions"/>
+  <Option name="parameterOrder"/>
+  <Option name="parameters"/>
+</Option>
